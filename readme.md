@@ -7,12 +7,12 @@ THe goal is to start Urban experimentation buy late 2021, this is a self-funded 
 
 **What does this do?**
 The idea is that you will build a IoT system that will
-[] Automate the hours of daylight from your grow lights connected directly from wall power
-[x] Run a 12v waterpump from battery (power failure) and cut the power if water in tank runs out
-[x] Monitor pH, TDS, water level, Co2, battery voltage, Temperature and Humidity
-[x] Programatically dose nutrients into the water reservoir
-[x] Programatically reduce pH from tap water
-[] Connect to cloud software that allows remote monitoring 
+- [] Automate the hours of daylight from your grow lights connected directly from wall power
+- [x] Run a 12v waterpump from battery (power failure) and cut the power if water in tank runs out
+- [x] Monitor pH, TDS, water level, Co2, battery voltage, Temperature and Humidity
+- [x] Programatically dose nutrients into the water reservoir
+- [x] Programatically reduce pH from tap water
+- [] Connect to cloud software that allows remote monitoring 
 
 ## Conceptual Architecture
 
