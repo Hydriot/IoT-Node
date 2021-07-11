@@ -3,7 +3,7 @@ This software serves as an example IoT node design for the Hydriot automation sy
 
 THe goal is to start Urban experimentation buy late 2021, this is a self-funded project so progres is slow but steady.
 
-![Hydriot IoT Node Project](https://raw.githubusercontent.com/Hydriot/IoT-Node/main/resources/hydroponics_project.jpg "Hydriot IoT Node Project")
+![Hydriot IoT Node Project](https://raw.githubusercontent.com/Hydriot/IoT-Node/main/resources/hydroponics_project.jpg | width=200) <br/>
 
 **What does this do?**
 The idea is that you will build a IoT system that will
@@ -16,7 +16,7 @@ The idea is that you will build a IoT system that will
 
 ## Conceptual Architecture
 
-![Hydriot IoT Node Conseptual Architecture](https://raw.githubusercontent.com/Hydriot/IoT-Node/main/resources/Master%20Node.jpg "Hydriot IoT Master Node Conceptual Architecture")
+![Hydriot IoT Node Conseptual Architecture](https://raw.githubusercontent.com/Hydriot/IoT-Node/main/resources/Master%20Node.jpg | width=200) <br/>
 The above design explains the high level components and how they are to be connected.
 
 Refer to the Wiki page to help you set the project up yourself.
