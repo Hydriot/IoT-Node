@@ -1,32 +1,26 @@
-# Raspbery Pi Agent
+# Hydriot IoT Node
+This software serves as an example IoT node design for the Hydriot automation systems. This could be used in isolation and can be modified in any way deemed fit for your hydroponics needs, the intention is to make it easier for people to enter and customize their urban farming systems.
 
-Build using Python 3.9.1
+THe goal is to start Urban experimentation buy late 2021, this is a self-funded project so progres is slow but steady.
 
-## Dependancies
+<img src="https://raw.githubusercontent.com/Hydriot/IoT-Node/main/resources/hydroponics_project.jpg" width="400" alt="Hydriot IoT Node Project"> <br/>
 
-1. Set the default python version to 3.9.1
+**What does this do?**
+The idea is that you will build a IoT system that will
+[] Automate the hours of daylight from your grow lights connected directly from wall power
+[x] Run a 12v waterpump from battery (power failure) and cut the power if water in tank runs out
+[x] Monitor pH, TDS, water level, Co2, battery voltage, Temperature and Humidity
+[x] Programatically dose nutrients into the water reservoir
+[x] Programatically reduce pH from tap water
+[] Connect to cloud software that allows remote monitoring 
 
-```Console
+## Conceptual Architecture
 
-python -m site
-pip config set global.target /home/pi/.local/lib/python3.7/site-packages
-echo "alias python=/bin/python3" >> ~/.bashrc
-source ~/.bashrc
+<img src="https://raw.githubusercontent.com/Hydriot/IoT-Node/main/resources/Master%20Node.jpg" width="600" alt="Hydriot IoT Node Conseptual Architecture"> <br/>
+The above design explains the high level components and how they are to be connected.
 
-python -m ensurepip
+Refer to the Wiki page to help you set the project up yourself.
 
-```
-
-2. Update PIP (`python -m pip install --upgrade pip`)
-3. Update the wheels (`python -m pip install --upgrade pip setuptools wheel`)
-2. Install to the default Python by including python -m not just pip
-
-```Console
-python -m pip install dependency-injector
-python -m pip install asyncio
-python -m pip install wiringpi
-python -m pip install smbus
-python -m pip install requests
-python -m pip install sip
-python -m pip install PyQt5
-```
+## Setup Guide
+* [Hardware Setup](https://github.com/Hydriot/IoT-Node/wiki/Hardware-Setup)
+* [Software Setup](https://github.com/Hydriot/IoT-Node/wiki/Software-Setup)
