@@ -24,5 +24,3 @@ Refer to the Wiki page to help you set the project up yourself.
 ## Setup Guide
 * [Hardware Setup](https://github.com/Hydriot/IoT-Node/wiki/Hardware-Setup)
 * [Software Setup](https://github.com/Hydriot/IoT-Node/wiki/Software-Setup)
-
-Marius
