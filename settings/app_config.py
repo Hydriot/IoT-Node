@@ -43,7 +43,7 @@ class AppConfig(object):
             config.set(self.sensors_section, "ph_offset", "-4.21")            
 
             config.add_section(self.integration_api_section)
-            config.set(self.integration_api_section, "base_url", "https://localhost:44333/api")
+            config.set(self.integration_api_section, "base_url", "https://hydriot.azurewebsites.net")
             config.set(self.integration_api_section, "node_id", "508728DE-F6AC-48C9-9D12-F18E0674A70A") # TODO: replace with n/a
             config.set(self.integration_api_section, "user", "****")
             config.set(self.integration_api_section, "pass", "****")

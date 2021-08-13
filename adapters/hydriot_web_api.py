@@ -11,7 +11,7 @@ class WebClient(object):
     base_url = "n/a"
 
     def __init__(self):
-        self.base_url = Config().get_integration_api_base_url()
+        self.base_url = AppConfig().get_integration_api_base_url()
 
     def show_api_result_details(self, result):
         print (f"Result code: {result.status_code}")
@@ -29,23 +29,28 @@ class WebClient(object):
         # create a json object that can be traversed
         return json.loads(self.get_json_text(obj))
 
-    def transform_sensor_data(self, sensor_list):
-        data = []
+    def transform_request_object(self, sensor_list):
+        sensors = []
 
         for key in sensor_list:
             sensor = sensor_list[key]
-            data.append({
+            sensors.append({
                 "name": sensor._name,
-                "type": 1,
-                "stringValue": str(sensor.get_latest_value()),
-                "readTime": sensor.get_last_read_time().strftime("%m/%d/%Y, %H:%M:%S")
-            })         
+                "value": sensor.read_value()
+            })
+
+        data = {
+            "name": "Home Node",
+            "description": "string",
+            "deviceId": "19be05b8-2201-40d8-9945-edc4da8fd9f1",
+            "sensors": sensors
+        }              
 
         return data
     
     def upload_sensor_readings(self, sensor_data, node_id):
-        url = f"{self.base_url}/node/UpdateNodeSensors/{node_id}"
-        data = self.transform_sensor_data(sensor_data)
+        url = f"{self.base_url}/api/node/UpdateSensorData/{node_id}"
+        data = self.transform_request_object(sensor_data)
 
         username = AppConfig().get_integration_api_username()
         password = AppConfig().get_integration_api_password()
@@ -53,17 +58,15 @@ class WebClient(object):
         success = False
 
         try:
-            OperatingSystem().clear_console()
             print("Updating server over API...")
 
             # TODO: Remove verify=False before deploying to production (Local Testing Only)
-            requests.put(url, json=data, auth=(username, password), timeout=8, verify=False)
+            response = requests.put(url, json=data, auth=(username, password), timeout=8, verify=False)
 
             if response.status_code == 200:
                 success = True
 
         except requests.exceptions.RequestException as e:  # This is the correct syntax
-            OperatingSystem().clear_console()
             print(f"Failed to update sensor readings. Error details >> {e}")
             # Sleep for 2s so that message is visible
             time.sleep(2)

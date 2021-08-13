@@ -90,6 +90,7 @@ class ReadSensorsTask(BaseTask):
         self.register_trigger(TriggerType.WaterPumpCutout,container.water_pump_relay_factory(), water_level_sensor)
 
         self.integration_adapter = IntegrationAdapter(30)
+        self.integration_adapter.start_monitoring(self.hydriot.sensors)
 
         await self.run_container()
     
