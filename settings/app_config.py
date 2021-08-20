@@ -26,6 +26,7 @@ class AppConfig(object):
             config.set(self.environment_section, "enable_sim", "true")
             config.set(self.environment_section, "save_to_file", "false")
             config.set(self.environment_section, "safe_shutdown_threshold", "11")
+            config.set(self.environment_section, "name", "Hydriot IoT Device")
 
             config.add_section(self.available_sensors)
             config.set(self.available_sensors, "water_level_enabled", "false")
@@ -44,7 +45,7 @@ class AppConfig(object):
 
             config.add_section(self.integration_api_section)
             config.set(self.integration_api_section, "base_url", "https://hydriot.azurewebsites.net")
-            config.set(self.integration_api_section, "node_id", "508728DE-F6AC-48C9-9D12-F18E0674A70A") # TODO: replace with n/a
+            config.set(self.integration_api_section, "device_id", "n/a")
             config.set(self.integration_api_section, "user", "****")
             config.set(self.integration_api_section, "pass", "****")
             config.set(self.integration_api_section, "enabled", "false")
@@ -56,6 +57,10 @@ class AppConfig(object):
         config = configparser.ConfigParser() 
         cfgfile = config.read(self._configfile_name)
         return config[section][key]
+
+    def set_key_value(self, section, key, value):
+        ## TODO: Update the config
+        pass
 
     def get_os(self):       
         return self.get_key_value(self.environment_section, "os")
@@ -69,8 +74,14 @@ class AppConfig(object):
     def get_safe_shutdown_threshold(self):
         return float(self.get_key_value(self.environment_section, "safe_shutdown_threshold"))
 
-    def get_integration_node_id(self):
-        return self.get_key_value(self.integration_api_section, "node_id")
+    def get_name(self):
+        return self.get_key_value(self.environment_section, "name")
+
+    def get_integration_device_id(self):
+        return self.get_key_value(self.integration_api_section, "device_id")
+
+    def set_integration_device_id(self, value):        
+        return self.set_key_value(self.integration_api_section, "device_id", value)
 
     def get_integration_api_base_url(self):
         return self.get_key_value(self.integration_api_section, "base_url")
