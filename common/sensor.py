@@ -1,5 +1,5 @@
-from enum import IntEnum
 from datetime import datetime
+from enum import IntEnum
 
 class BaseType(IntEnum):
     Undefined = 0
@@ -14,6 +14,7 @@ class SensorType(IntEnum):
     pH = 3
     LightFrequency = 4
     LightIntensity = 5
+    Voltage = 6
     Custom = 99
 
 class Settings():
@@ -37,10 +38,11 @@ class Sensor():
     groupName = None
     settings = None
 
-    def __init__(self, type, value, name = None, read_time = datetime.now(), group_name = 'default', settings = None):
+    def __init__(self, type, value, read_time = datetime.now(), name = None, group_name = 'default', settings = None):
         self.name = str(type) if name is None else name
         self.value = value
         self.type = type
         self.readTime = read_time
         self.groupName = group_name
         self.settings = settings
+

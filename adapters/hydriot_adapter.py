@@ -27,18 +27,15 @@ class HydriotAdapter():
     def check_if_device_is_registered(self, device_id):
 
         try:
-            print("Making API call...")
             url = f"{self.base_url}/api/Device/CheckRegisteredStatus/{device_id}"
             response = requests.request("GET", url, headers=self.headers)
-
-            print(f"IF REGISTERED [{device_id}] [{response.status_code}]")
-            time.sleep(5)
 
             if response.status_code != 200:                
                 raise LookupError(f'Failed to complete the request. Error Code [{response.status_code}]')
 
-        except requests.exceptions.RequestException as e:  # This is the correct syntax
+        except requests.exceptions.RequestException as e:
             print(f"Failed to verify registration. Error details >> {e}")
+            time.sleep(5)
      
         return response.text == 'true'
 
@@ -51,30 +48,30 @@ class HydriotAdapter():
         }
 
         try:
-            print("Making API call...")
             url = f"{self.base_url}/api/Device/RegisterDevice"
             response = requests.request("POST", url, data=json.dumps(payload), headers=self.headers)
 
             if response.status_code != 200:
                 raise LookupError(f'Failed to complete the request. Error Code [{response.status_code}]')
 
-        except requests.exceptions.RequestException as e:  # This is the correct syntax
+        except requests.exceptions.RequestException as e:
             print(f"Failed to verify registration. Error details >> {e}")
+            time.sleep(5)
 
         return response.json()
 
     def get_device_data(self, device_id):
         
         try:
-            print("Making API call...")
             url = f"{self.base_url}/api/Device/GetDeviceData/{device_id}"
             response = requests.request("GET", url, headers=self.headers)
 
             if response.status_code != 200:
                 raise LookupError(f'Failed to complete the request. Error Code [{response.status_code}]')
 
-        except requests.exceptions.RequestException as e:  # This is the correct syntax
+        except requests.exceptions.RequestException as e:
             print(f"Failed to verify registration. Error details >> {e}")
+            time.sleep(5)
 
         return response.json()
 
@@ -102,15 +99,15 @@ class HydriotAdapter():
         }  
         
         try:
-            print("Making API call...")
             url = f"{self.base_url}/api/Device/UpdateSensorData/{device_id}"
             response = requests.request("PUT", url, data=json.dumps(payload), headers=self.headers)
 
             if response.status_code != 200:
                 raise LookupError(f'Failed to complete the request. Error Code [{response.status_code}]')
 
-        except requests.exceptions.RequestException as e:  # This is the correct syntax
+        except requests.exceptions.RequestException as e:
             print(f"Failed to verify registration. Error details >> {e}")
+            time.sleep(5)
 
         return response.json()
         

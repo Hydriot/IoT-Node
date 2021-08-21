@@ -1,13 +1,6 @@
 
 from enum import Enum
-from sensors.ph_sensor import PhSensor
-
-class SensorType(Enum):
-    Undefined = 0,
-    TDS = 1,
-    Ph = 2,
-    WaterLevel = 3,
-    Voltage = 4
+from common.sensor import SensorType
 
 class TriggerType(Enum):
     Undefined = 0,
@@ -16,16 +9,27 @@ class TriggerType(Enum):
     WaterPumpCutout = 3
 
 class Hydriot():
-    sensors = dict()
+    sensors = []
     triggers = dict()
 
-    def set_sensor(self, sensor_type, sensor):
-        self.sensors[sensor_type] = sensor
+    def set_sensor(self, sensor):
+
+        found = False
+        for index in range(len(self.sensors)):
+            if (self.sensors[index].sensor_type == sensor.sensor_type):
+                self.sensors[index] = sensor
+                found = True
+                break
+            
+        if not found:
+            self.sensors.append(sensor)
 
     def get_sensor(self, sensor_type):
-        if sensor_type not in self.sensors:
-            return None
-        return self.sensors[sensor_type]
+        for sensor in self.sensors:
+            if sensor.sensor_type == sensor_type:
+                return sensor
+
+        return None
 
     def set_trigger(self, trigger_type, trigger):
         self.triggers[trigger_type] = trigger
@@ -37,19 +41,19 @@ class Hydriot():
 
     @property
     def ph_sensor(self):
-        return None if SensorType.Ph not in self.sensors else self.sensors[SensorType.Ph]
+        return self.get_sensor(SensorType.pH)
 
     @property
     def tds_sensor(self):
-        return None if SensorType.TDS not in self.sensors else self.sensors[SensorType.TDS]
+        return self.get_sensor(SensorType.TDS)
 
     @property
     def water_level_sensor(self):
-        return None if SensorType.WaterLevel not in self.sensors else self.sensors[SensorType.WaterLevel]
+        return self.get_sensor(SensorType.WaterLevel)
     
     @property
     def voltage_sensor(self):
-        return None if SensorType.Voltage not in self.sensors else self.sensors[SensorType.Voltage]
+        return self.get_sensor(SensorType.Voltage)
 
     @property
     def nutrient_trigger(self):

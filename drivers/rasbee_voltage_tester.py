@@ -52,6 +52,7 @@ class RasbeeVoltageTesterDriver(DriverBase):
         except:
             e = sys.exc_info()[0]
             print(f"Failed to read voltage. Error Details >> {e}")
+            time.sleep(5)
             return False
         finally:
             if reading > -1:

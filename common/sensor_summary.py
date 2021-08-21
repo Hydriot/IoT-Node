@@ -1,4 +1,7 @@
 from datetime import datetime
+from common.sensor import Sensor
+from decimal import Decimal
+import time
 
 class SensorSummary():
     name = None
@@ -16,6 +19,7 @@ class SensorSummary():
     expect_variance = None
     lower_threshold = None
     upper_threshold = None
+    sensor_type = None
 
     _history_depth = 20
     _stabilizing_count = 5
@@ -62,10 +66,11 @@ class SensorSummary():
         self._consecutive_error_count += 1
         self._reset_history()
 
-    def __init__(self, name, frequency_in_Seconds):
+    def __init__(self, name, type, frequency_in_Seconds):
         self.name = name
         self._frequency_in_seconds = frequency_in_Seconds
         self._reset_history()
+        self.sensor_type = type
 
     def define_health_parameters(self, expect_variance = False, lower_threshold = None, upper_threshold = None):
         self.expect_variance = expect_variance
@@ -86,8 +91,15 @@ class SensorSummary():
             self._add_to_history(new_value)
             self._consecutive_error_count = 0
             self._update_history_metadata()
+
+    def convert_online(self):
+        if self.latest_value is None:
+            return None
+     
+        converted_sensor = Sensor(self.sensor_type, self.latest_value, self.last_execution)
+        return converted_sensor
     
-    def is_healthy(self):        
+    def is_healthy(self):
         has_reading = self.last_execution is None or self.latest_value is None
         has_multiple_errors = self._consecutive_error_count > 0       
 
@@ -111,3 +123,4 @@ class SensorSummary():
             return False
         
         return True
+

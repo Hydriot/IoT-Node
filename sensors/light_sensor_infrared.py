@@ -1,14 +1,16 @@
 import sys
+import time
 
 from utilities.maths import Math
 from sensors.contracts.sensor_base import SensorBase
 from drivers.cqrobot_light_sensor import CQRobotLightSensor
 from settings.app_config import AppConfig
+from common.sensor import SensorType
 
 class LightSensorInfraredStub(SensorBase):
     def __init__(self):
         enabled = AppConfig().is_light_enabled_sensor()
-        SensorBase.__init__(self, None, "Light Sensor", 2, enabled, True)        
+        SensorBase.__init__(self, None, SensorType.LightFrequency, "Light Sensor", 2, enabled, True)        
 
     def read_implimentation(self):
         ## Stubbed Reading
@@ -24,7 +26,7 @@ class LightSensorInfrared(SensorBase):
     def __init__(self):
         enabled = AppConfig().is_light_enabled_sensor()
         self.driver = CQRobotLightSensor()
-        SensorBase.__init__(self, self.driver, "Light Sensor", 2, enabled, True)
+        SensorBase.__init__(self, self.driver, SensorType.LightFrequency, "Light Sensor", 2, enabled, True)
         self.sensor_summary.define_health_parameters(True)
 
     def read_raw(self):
@@ -36,7 +38,8 @@ class LightSensorInfrared(SensorBase):
 
             return value
         except:
-            e = sys.exc_info()[0]
+            e = sys.exc_info()[0]            
+            self.sensor_summary.set_last_read_error()
             print(f"Failed to read [{self.sensor_summary.name}]. Error Details >> {e}")
-            self.sensor_summary.set_last_read_error()            
+            time.sleep(5)      
             return None

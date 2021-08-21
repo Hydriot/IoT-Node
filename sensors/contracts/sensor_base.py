@@ -1,18 +1,21 @@
-from common.sensor_summary import SensorSummary
-from common.scheduling_abstract import SchedulingAbstract
 import sys
 import asyncio
+import time
+
+from common.sensor_summary import SensorSummary
+from common.scheduling_abstract import SchedulingAbstract
 
 class SensorBase(SchedulingAbstract):    
     sensor_summary = None
     driver = None
     is_enabled = None
-
-    def __init__(self, driver, sensor_name, frequency_in_seconds, is_enabled = False, use_average = False):
+    
+    def __init__(self, driver, type, sensor_name, frequency_in_seconds, is_enabled = False, use_average = False):
         self.driver = driver
-        self.sensor_summary = SensorSummary(sensor_name, frequency_in_seconds)
+        self.sensor_summary = SensorSummary(sensor_name, type, frequency_in_seconds)
         self.is_enabled = is_enabled
         SchedulingAbstract.__init__(self, frequency_in_seconds, sensor_name, use_average)
+        self.sensor_type = type
 
     def get_last_read_time(self):
         return self.sensor_summary.last_execution
@@ -59,9 +62,10 @@ class SensorBase(SchedulingAbstract):
 
             return value
         except:
-            e = sys.exc_info()[0]
+            e = sys.exc_info()[0]            
+            self.sensor_summary.set_last_read_error()
             print(f"Failed to read [{self.sensor_summary.name}]. Error Details >> {e}")
-            self.sensor_summary.set_last_read_error()            
+            time.sleep(5)  
             return None
 
     def is_available(self):
@@ -71,8 +75,9 @@ class SensorBase(SchedulingAbstract):
         try:
             return self.driver.is_available()
         except:
-            e = sys.exc_info()[0]
-            print(f"Failed to verify if [{self.sensor_summary.name}] is available. Error Details >> {e}")
+            e = sys.exc_info()[0]            
             self.sensor_summary.set_last_read_error()
+            print(f"Failed to verify if [{self.sensor_summary.name}] is available. Error Details >> {e}")
+            time.sleep(5)
             return False
 

@@ -1,4 +1,5 @@
 import wiringpi as GPIO
+import time
 from drivers.driver_base import DriverBase
 from utilities.pin_converter import PinMapper
 from settings.app_config import AppConfig
@@ -33,6 +34,7 @@ class CQRobotContactLiquidLevelSensorDriver(DriverBase):
         except:
             e = sys.exc_info()[0]
             print(f"Failed to read Liquid Level Sensor. Error Details >> {e}")
+            time.sleep(5)
             return False
         finally:
             if reading > -1:

@@ -2,7 +2,6 @@ import asyncio
 import sys
 from datetime import datetime
 from adapters.hydriot_adapter import HydriotAdapter
-from common.sensor import Sensor, SensorType
 from settings.app_config import AppConfig
 from configparser import Error
 import time
@@ -38,6 +37,8 @@ class IntegrationAdapter(object):
             AppConfig().set_integration_device_id(self._device_id)
 
         while self._is_monitoring and (if_registered == None or if_registered == True):
+            await asyncio.sleep(self._frequency_in_seconds) 
+
             try:
 
                 if (if_registered == None):
@@ -45,24 +46,23 @@ class IntegrationAdapter(object):
 
                 if not AppConfig().get_integration_enabled():                
                     continue
-                
-                # TODO: Map the actual sensors
-                sensor_list = [
-                    Sensor(SensorType.pH, 6),
-                    Sensor(SensorType.TDS, 154)
-                ]
+
+                sensor_list = []
+                for sensor in self._sensors:
+                    converted_sensor = sensor.convert_online()
+                    if converted_sensor is not None:
+                        sensor_list.append(converted_sensor)
 
                 device_data = self.adapter.update_sensor_data(self._device_id, 'Test Device', 'Seed example device', sensor_list)
 
                 self.previous_integration_success = True
-                self.last_integration_update = datetime.now()
-
-                await asyncio.sleep(self._frequency_in_seconds) 
+                self.last_integration_update = datetime.now()                
 
             except:
                 e = sys.exc_info()[0]
-                self.previous_integration_success = False    
-                print(f"Failed to do X. Error Details >> {e}")
+                self.previous_integration_success = False                
+                print(f"Failed to do Update the latest information to Hydriot online. Error Details >> {e}")
+                time.sleep(5)
 
 
     def stop_monitoring(self):
@@ -71,8 +71,6 @@ class IntegrationAdapter(object):
     def start_monitoring(self, sensors):
         self._sensors = sensors
         asyncio.ensure_future(self.register_integration())  
-        pass
     
     def cleanup(self):
         self.stop_monitoring()
-        pass

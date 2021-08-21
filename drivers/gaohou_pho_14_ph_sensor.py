@@ -51,6 +51,7 @@ class GaohouPhSensorDriver(DriverBase):
         except:
             e = sys.exc_info()[0]
             print(f"Failed to read PH. Error Details >> {e}")
+            time.sleep(5)
             return False
         finally:
             if reading > -1:

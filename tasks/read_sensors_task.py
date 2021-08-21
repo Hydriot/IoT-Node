@@ -8,7 +8,7 @@ from utilities.dependency_injection import Container
 from utilities.console_manager import ConsoleManager
 from utilities.integration_adapter import IntegrationAdapter
 from common.task_manager import TaskManager
-from hydriot import Hydriot, SensorType, TriggerType
+from hydriot import Hydriot, TriggerType
 from common.sensor_summary import SensorSummary
 from PyQt5.QtCore import pyqtSignal
 
@@ -55,10 +55,10 @@ class ReadSensorsTask(BaseTask):
 
             await asyncio.sleep(3)
     
-    def register_sensor(self, sensor_type, sensor):
+    def register_sensor(self, sensor):
         if sensor.is_enabled and sensor.is_available():            
             asyncio.ensure_future(sensor.run_schedule(self.task_manager))
-            self.hydriot.set_sensor(sensor_type, sensor.sensor_summary)
+            self.hydriot.set_sensor(sensor.sensor_summary)
 
     def register_trigger(self, trigger_type, trigger, dependant_sensor = None):         
         if dependant_sensor is not None:
@@ -72,16 +72,16 @@ class ReadSensorsTask(BaseTask):
         container = Container()
 
         ph_sensor = container.ph_sensor_factory()
-        self.register_sensor(SensorType.Ph, ph_sensor)
+        self.register_sensor(ph_sensor)
 
         tds_sensor = container.tds_factory()
-        self.register_sensor(SensorType.TDS, tds_sensor)
+        self.register_sensor(tds_sensor)
 
         water_level_sensor = container.water_level_sensor_factory()
-        self.register_sensor(SensorType.WaterLevel, water_level_sensor)
+        self.register_sensor(water_level_sensor)
 
         voltage_sensor = container.voltage_tester_factory()
-        self.register_sensor(SensorType.Voltage, voltage_sensor)
+        self.register_sensor(voltage_sensor)
 
         ## self.register_sensor(container.light_sensor_infrared_factory())
 

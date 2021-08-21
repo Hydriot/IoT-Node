@@ -335,6 +335,7 @@ class CQRobotLightSensor:
         except:
             e = sys.exc_info()[0]
             print(f"Failed to read Light. Error Details >> {e}")
+            time.sleep(5)
             return False
         finally:
             if reading > -1:

@@ -6,11 +6,12 @@ from utilities.maths import Math
 from sensors.contracts.sensor_base import SensorBase
 from drivers.gaohou_pho_14_ph_sensor import GaohouPhSensorDriver
 from settings.app_config import AppConfig
+from common.sensor import SensorType
 
 class PhSensorStub(SensorBase):
     def __init__(self):
         enabled = AppConfig().is_ph_enabled_sensor()
-        SensorBase.__init__(self, None, "pH Sensor", 2, enabled, True)        
+        SensorBase.__init__(self, None, SensorType.pH, "pH Sensor", 2, enabled, True)        
 
     def read_implimentation(self):
         ## Stubbed Reading
@@ -27,7 +28,7 @@ class PhSensor(SensorBase):
     def __init__(self):
         enabled = AppConfig().is_ph_enabled_sensor()
         self.driver = GaohouPhSensorDriver()
-        SensorBase.__init__(self, self.driver, "pH Sensor", 2, enabled, True)
+        SensorBase.__init__(self, self.driver, SensorType.pH, "pH Sensor", 2, enabled, True)
         self.offset = AppConfig().get_ph_offset()
         self.sensor_summary.define_health_parameters(True, 0, 14)
 
