@@ -28,43 +28,42 @@ class IntegrationAdapter(object):
         self.logger = Logger()
     
     async def register_integration(self):
-        self._is_monitoring = True
-        if_registered = None
+        try:
+            if not AppConfig().get_integration_enabled():                
+                self.logger.warn("Update to hydriot online is disabled. Not scheduling sensor updates.")
+                return
 
-        if self._sensors != None:
-            pass
+            self._is_monitoring = True
 
-        if self._device_id == "n/a":
-            self._device_id = self.adapter.register_device(self._name, self._name, True)
-            AppConfig().set_integration_device_id(self._device_id)
+            # Get Registered ID or Create a new one
+            if self._device_id == "n/a":
+                self._device_id = self.adapter.register_device(self._name, self._name, True)
+                updated_value = AppConfig().set_integration_device_id(self._device_id)
+                self.logger.info(f"Updated the Device ID from Hydriot Online. DeviceID [{updated_value}]")
 
-        while self._is_monitoring and (if_registered == None or if_registered == True):
-            await asyncio.sleep(self._frequency_in_seconds) 
+            while self._is_monitoring:
+                await asyncio.sleep(self._frequency_in_seconds) 
 
-            try:
+                try:
+                    sensor_list = []
+                    for sensor in self._sensors:
+                        converted_sensor = sensor.convert_online()
+                        if converted_sensor is not None:
+                            sensor_list.append(converted_sensor)
 
-                if (if_registered == None):
-                    if_registered = self.adapter.check_if_device_is_registered(self._device_id)
+                    self.adapter.update_sensor_data(self._device_id, 'Test Device', 'Seed example device', sensor_list)
 
-                if not AppConfig().get_integration_enabled():                
-                    continue
+                    self.previous_integration_success = True
+                    self.last_integration_update = datetime.now()                
 
-                sensor_list = []
-                for sensor in self._sensors:
-                    converted_sensor = sensor.convert_online()
-                    if converted_sensor is not None:
-                        sensor_list.append(converted_sensor)
+                except:
+                    ex = traceback.format_exc()
+                    self.previous_integration_success = False                     
+                    self.logger.error(f"Failed to do an update with the latest information to Hydriot online. Error Details >> {ex}")
 
-                device_data = self.adapter.update_sensor_data(self._device_id, 'Test Device', 'Seed example device', sensor_list)
-
-                self.previous_integration_success = True
-                self.last_integration_update = datetime.now()                
-
-            except:
-                ex = traceback.format_exc()
-                self.previous_integration_success = False                     
-                self.logger.error(f"Failed to do Update the latest information to Hydriot online. Error Details >> {ex}")
-
+        except:
+            ex = traceback.format_exc()
+            self.logger.error(f"Failed to schedule the updating of information to Hydriot online >> {ex}")
 
     def stop_monitoring(self):
         self._is_monitoring = False

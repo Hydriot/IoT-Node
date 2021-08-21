@@ -1,5 +1,6 @@
 import os
 import configparser
+import time
 
 class AppConfig(object):
     _configfile_name = "config.ini"
@@ -13,6 +14,7 @@ class AppConfig(object):
     available_triggers = "enabled_triggers"
     
     def __init__(self):
+
         # Check if there is already a configuration file
         if not os.path.isfile(self._configfile_name):
             # Create the configuration file as it doesn't exist yet
@@ -61,8 +63,14 @@ class AppConfig(object):
         return config[section][key]
 
     def set_key_value(self, section, key, value):
-        ## TODO: Update the config
-        pass
+        file = open(self._configfile_name)
+        parser = configparser.ConfigParser()
+        parser.read_file(file)
+        parser.set(section, key, value)
+        new_value = parser.get(section, key)
+        parser.write(open(self._configfile_name, 'w'))
+       
+        return new_value
 
     def get_enable_sim(self):
         return self.get_key_value(self.environment_section, "enable_sim") == "true"
