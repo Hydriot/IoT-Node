@@ -1,5 +1,4 @@
 import os
-import time
 
 from utilities.maths import Math
 from sensors.contracts.sensor_base import SensorBase
@@ -46,8 +45,7 @@ class VoltageTester(SensorBase):
 
             for count in range(delay_in_seconds, 0, -1):
                 Logger.clear_console()
-                print(f"WARNING! Dangerously low voltage detected, shutting down the system in [{count}] seconds.")
-                time.sleep(1)
+                self.logger.warn(f"WARNING! Dangerously low voltage detected, shutting down the system in [{count}] seconds.", 1)
 
             os.system("sudo shutdown -h now")
 

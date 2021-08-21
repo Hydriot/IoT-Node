@@ -4,11 +4,13 @@ from tasks.contracts.base_task import BaseTask
 from utilities.dependency_injection import Container
 from settings.trigger_config import TriggerConfig
 from utilities.dependency_injection import Container
+from utilities.logger import Logger
 
 class NutrientDoseTask(BaseTask):
+    logger = Logger()
 
     def run_custom(self):
-        print(f"starting example task [NutrientDoseTask]")
+        self.logger.info(f"starting example task [NutrientDoseTask]")
 
         nutrient_trigger = Container().nutrient_relay_factory()
         ## nutrient_trigger.set_tds_sensor_summary(tds_summary)

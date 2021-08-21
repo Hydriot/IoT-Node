@@ -1,6 +1,9 @@
-from abc import ABC, abstractmethod ## abstract module
+
 import RPi.GPIO as GPIO
+
 from enum import Enum
+from abc import ABC, abstractmethod ## abstract module
+from utilities.logger import Logger
 
 class SwitchStatus(Enum):
     Undefined = 0
@@ -13,15 +16,7 @@ class OnOffRelayAbstract(ABC):
     _is_normally_on = None
     relay_pin_pos = None
     is_low_volt_relay = True # Use this when connected to 3.3V source (If it does switch off use this and switch to 3.3V)
-
-    def _switch_relay_on(self):
-        self._current_on_state = True
-        GPIO.output(self.relay_pin_pos, GPIO.LOW if self.is_low_volt_relay else GPIO.HIGH) # ON
-        pass
-    
-    def _switch_relay_off(self): 
-        GPIO.output(self.relay_pin_pos, GPIO.HIGH if self.is_low_volt_relay else GPIO.LOW) # OFF
-        pass
+    logger = None
 
     def __init__(self, name, relay_pin_pos, is_enabled, normal_status = SwitchStatus.Undefined):
         self.name = name
@@ -29,15 +24,23 @@ class OnOffRelayAbstract(ABC):
         self._is_normally_on = normal_status == SwitchStatus.On
         self.relay_pin_pos = relay_pin_pos
         self.intended_status = normal_status
+        self.logger = Logger()
 
         GPIO.setmode(GPIO.BOARD)
         GPIO.setup(self.relay_pin_pos, GPIO.OUT)
 
         self.sync_status()   
 
+    def _switch_relay_on(self):
+        self._current_on_state = True
+        GPIO.output(self.relay_pin_pos, GPIO.LOW if self.is_low_volt_relay else GPIO.HIGH) # ON
+    
+    def _switch_relay_off(self): 
+        GPIO.output(self.relay_pin_pos, GPIO.HIGH if self.is_low_volt_relay else GPIO.LOW) # OFF
+
     def switch_on(self):
         if not self.validate_action(SwitchStatus.On):
-            print(f"Validation failed. Could not switch on [{self.name}]")
+            self.logger.error(f"Validation failed. Could not switch on [{self.name}] already on.")
             return
 
         if (self._is_normally_on):
@@ -47,7 +50,7 @@ class OnOffRelayAbstract(ABC):
 
     def switch_off(self):
         if not self.validate_action(SwitchStatus.Off):
-            print(f"Validation failed. Could not switch off [{self.name}]")
+            self.logger.error(f"Validation failed. Could not switch off [{self.name}] already off.")
             return
 
         if (self._is_normally_on):

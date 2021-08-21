@@ -4,6 +4,7 @@ import asyncio
 from datetime import datetime
 from adapters.hydriot_adapter import HydriotAdapter
 from settings.app_config import AppConfig
+from utilities.logger import Logger
 
 class IntegrationAdapter(object):
     _frequency_in_seconds = 1    
@@ -14,6 +15,7 @@ class IntegrationAdapter(object):
     last_integration_update = None
     previous_integration_success = False
     adapter = None
+    logger = None
 
     def __init__(self, update_frequency):
         self._frequency_in_seconds = update_frequency
@@ -23,6 +25,7 @@ class IntegrationAdapter(object):
         self.adapter = HydriotAdapter(base_url, username, password)
         self._device_id = AppConfig().get_integration_device_id()
         self._name = AppConfig().get_name()
+        self.logger = Logger()
     
     async def register_integration(self):
         self._is_monitoring = True
@@ -60,7 +63,7 @@ class IntegrationAdapter(object):
             except:
                 ex = traceback.format_exc()
                 self.previous_integration_success = False                     
-                print(f"Failed to do Update the latest information to Hydriot online. Error Details >> {ex}")
+                self.logger.error(f"Failed to do Update the latest information to Hydriot online. Error Details >> {ex}")
 
 
     def stop_monitoring(self):

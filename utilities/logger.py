@@ -43,6 +43,11 @@ class Logger():
     def info(self, msg):
         print(f"Timestamp [{datetime.now()}] Level [Info] >> {msg}")
         self.write_to_file("Info", msg)
+
+    def warn(self, msg, delay = 0):
+        print(f"Timestamp [{datetime.now()}] Level [Warn] >> {msg}")
+        if delay > 0:
+            time.sleep(delay)
           
     def error(self, msg):
         self.write_to_file("Error", msg)

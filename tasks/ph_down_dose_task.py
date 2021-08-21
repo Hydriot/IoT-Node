@@ -4,11 +4,13 @@ from tasks.contracts.base_task import BaseTask
 from utilities.dependency_injection import Container
 from settings.trigger_config import TriggerConfig
 from utilities.dependency_injection import Container
+from utilities.logger import Logger
 
 class PhDownTask(BaseTask):
+    logger = Logger()
 
     def run_custom(self):
-        print(f"starting example task [PhDownTask]")
+        self.logger.info(f"starting example task [PhDownTask]")
 
         ph_down_trigger = Container().ph_down_relay_factory()
         ## ph_down_trigger.set_ph_down_sensor_summary(ph_down_summary)

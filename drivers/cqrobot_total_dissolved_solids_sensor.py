@@ -1,10 +1,12 @@
 import sys
+import traceback
 import time
 import os
 
 from drivers.driver_base import DriverBase
 from drivers.cqrobot_analog_to_digital_converter import PGA, Channel, ConverterMode, ADS1115
 from settings.app_config import AppConfig
+from utilities.logger import Logger
 
 ## Manufacturer Source
 ## http://www.cqrobot.wiki/index.php/TDS_Meter_Sensor
@@ -13,8 +15,10 @@ class CQRobotTotalDissolvedSolidsSensorDriver(DriverBase):
     converter_mode = None
     channel = None
     pga = None
+    logger = None
 
     def __init__(self):
+        self.logger = Logger()
 
         # Set the IIC address (0X48 or 0X49 based on switch on ADC Module)
         self.converter_mode = ConverterMode.x48
@@ -49,8 +53,8 @@ class CQRobotTotalDissolvedSolidsSensorDriver(DriverBase):
         try:
             reading = self.read_value()
         except:
-            e = sys.exc_info()[0]
-            print(f"Failed to read TDS. Error Details >> {e}")
+            ex = traceback.format_exc()
+            self.logger.error(f"Failed to read TDS. Error Details >> {ex}")
             return False
         finally:
             if reading > -1:
