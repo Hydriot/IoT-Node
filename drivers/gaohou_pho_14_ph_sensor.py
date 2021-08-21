@@ -1,10 +1,9 @@
-import sys
-import time
-import os
+import traceback
 
 from drivers.driver_base import DriverBase
 from drivers.cqrobot_analog_to_digital_converter import PGA, Channel, ConverterMode, ADS1115
 from settings.app_config import AppConfig
+from utilities.logger import Logger
 
 ## Manufacturer Source
 ## http://www.baaqii.net/promanage/BU0203%2BBU0481.pdf
@@ -13,6 +12,7 @@ from settings.app_config import AppConfig
 class GaohouPhSensorDriver(DriverBase):
     converter_mode = None
     channel = None
+    logger = None
 
     def __init__(self):
 
@@ -27,6 +27,7 @@ class GaohouPhSensorDriver(DriverBase):
         pass    
 
     def initialize(self):
+        self.logger = Logger()
         self.ads1115 = ADS1115()
 
         self.ads1115.setAddr_ADS1115(self.converter_mode)
@@ -49,9 +50,8 @@ class GaohouPhSensorDriver(DriverBase):
         try:
             reading = self.read_value()
         except:
-            e = sys.exc_info()[0]
-            print(f"Failed to read PH. Error Details >> {e}")
-            time.sleep(5)
+            ex = traceback.format_exc()
+            self.logger.error(f"Failed to read PH. Error Details >> {ex}")
             return False
         finally:
             if reading > -1:

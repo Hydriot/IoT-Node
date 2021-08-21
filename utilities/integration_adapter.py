@@ -1,10 +1,9 @@
+import traceback
 import asyncio
-import sys
+
 from datetime import datetime
 from adapters.hydriot_adapter import HydriotAdapter
 from settings.app_config import AppConfig
-from configparser import Error
-import time
 
 class IntegrationAdapter(object):
     _frequency_in_seconds = 1    
@@ -59,10 +58,9 @@ class IntegrationAdapter(object):
                 self.last_integration_update = datetime.now()                
 
             except:
-                e = sys.exc_info()[0]
-                self.previous_integration_success = False                
-                print(f"Failed to do Update the latest information to Hydriot online. Error Details >> {e}")
-                time.sleep(5)
+                ex = traceback.format_exc()
+                self.previous_integration_success = False                     
+                print(f"Failed to do Update the latest information to Hydriot online. Error Details >> {ex}")
 
 
     def stop_monitoring(self):

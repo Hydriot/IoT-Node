@@ -5,15 +5,16 @@
 """
 
 import sys
+import traceback
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (QApplication, QLabel, QMainWindow, QPushButton, QVBoxLayout, QWidget)
 from settings.app_config import AppConfig
 from settings.trigger_config import TriggerConfig
 from gui_worker import GuiWorker
+from utilities.logger import Logger
 
 class Window(QMainWindow):
-
     hydriot = None
     tds_sensor = None
     water_level_sensor = None
@@ -21,6 +22,7 @@ class Window(QMainWindow):
     light_trigger = None
     water_pump_trigger = None
     gui_worker = None
+    logger = None
 
     def __init__(self):
         super().__init__(parent = None)
@@ -28,6 +30,7 @@ class Window(QMainWindow):
         TriggerConfig()
         self.gui_worker = GuiWorker()
         self.setupUi()
+        self.logger = Logger
 
     def get_tds_sensor(self):
         for sensor in self.sensors:
@@ -42,43 +45,49 @@ class Window(QMainWindow):
         return None    
 
     def setupUi(self):
-        self.setWindowTitle("Hydriot Node")
-        self.resize(300, 150)
-        self.centralWidget = QWidget()
-        self.setCentralWidget(self.centralWidget)
 
-        # Nutrient Dosage
-        self.nutrient_label = QLabel("Nutrient dose on command", self)
-        self.nutrient_label.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-        self.nutrient_button = QPushButton("Nutrient Dosage", self)   
-        self.nutrient_button.clicked.connect(self.dose_nutrient)
+        try:
+            self.setWindowTitle("Hydriot Node")
+            self.resize(300, 150)
+            self.centralWidget = QWidget()
+            self.setCentralWidget(self.centralWidget)
 
-        # Ph Down Dosage
-        self.ph_down_label = QLabel("Ph down dose on command", self)
-        self.ph_down_label.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-        self.ph_down_button = QPushButton("Ph Down Dosage", self)         
-        self.ph_down_button.clicked.connect(self.dose_ph_down)
+            # Nutrient Dosage
+            self.nutrient_label = QLabel("Nutrient dose on command", self)
+            self.nutrient_label.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+            self.nutrient_button = QPushButton("Nutrient Dosage", self)   
+            self.nutrient_button.clicked.connect(self.dose_nutrient)
 
-        self.sensors_button = QPushButton("Start Sensors", self)        
-        self.sensors_button.clicked.connect(self.start_sensor_readings)
-        self.sensors_label = QLabel("Sensor Readings (Background Thread)")
+            # Ph Down Dosage
+            self.ph_down_label = QLabel("Ph down dose on command", self)
+            self.ph_down_label.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+            self.ph_down_button = QPushButton("Ph Down Dosage", self)         
+            self.ph_down_button.clicked.connect(self.dose_ph_down)
 
-        # Set the layout
-        layout = QVBoxLayout()
+            self.sensors_button = QPushButton("Start Sensors", self)        
+            self.sensors_button.clicked.connect(self.start_sensor_readings)
+            self.sensors_label = QLabel("Sensor Readings (Background Thread)")
 
-        layout.addWidget(self.sensors_label)
-        layout.addWidget(self.sensors_button)        
-        layout.addStretch()
-   
-        layout.addWidget(self.nutrient_label)
-        layout.addWidget(self.nutrient_button)
-        layout.addStretch()
+            # Set the layout
+            layout = QVBoxLayout()
 
-        layout.addWidget(self.ph_down_label)
-        layout.addWidget(self.ph_down_button)
-        layout.addStretch()        
-       
-        self.centralWidget.setLayout(layout)
+            layout.addWidget(self.sensors_label)
+            layout.addWidget(self.sensors_button)        
+            layout.addStretch()
+    
+            layout.addWidget(self.nutrient_label)
+            layout.addWidget(self.nutrient_button)
+            layout.addStretch()
+
+            layout.addWidget(self.ph_down_label)
+            layout.addWidget(self.ph_down_button)
+            layout.addStretch()        
+        
+            self.centralWidget.setLayout(layout)
+
+        except:
+            ex = traceback.format_exc()
+            self.logger.error(f"Failed to setup UI. Error Details >> {ex}")        
 
     def dose_nutrient(self):
         self.nutrient_button.setEnabled(False)
@@ -99,8 +108,11 @@ class Window(QMainWindow):
         output = self.update_sensors(counter)
         self.sensors_label.setText(f"Available Sensors >> {output}")
 
+
+Logger().info(f"Starting IoT Node.")
 app = QApplication(sys.argv)
 win = Window()
 win.show()
+
 sys.exit(app.exec())
 

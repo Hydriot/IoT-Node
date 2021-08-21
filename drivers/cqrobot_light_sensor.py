@@ -1,11 +1,12 @@
-import logging
 import sys
 import time
 import math
 import smbus
+import traceback
 import RPi.GPIO as GPIO
-from settings.app_config import AppConfig
 
+from utilities.logger import Logger
+from settings.app_config import AppConfig
 from drivers.driver_base import DriverBase
 
 ## Manufacturer Source
@@ -88,6 +89,7 @@ class TSL2591:
         self.gpio_pin = gpio_pin
         self.i2c = smbus.SMBus(1)
         self.address = address
+        self.logging = Logger()
         
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
@@ -97,7 +99,8 @@ class TSL2591:
         
         self.ID = self.Read_Byte(ID_REGISTER)
         if(self.ID != 0x50):
-            print("ID = 0x%x"%self.ID)
+            
+            self.logger.console("ID = 0x%x"%self.ID)
             sys.exit()
         
         self.Enable()
@@ -140,7 +143,7 @@ class TSL2591:
             self.Write_Byte(CONTROL_REGISTER, control)
             self.Gain = Val
         else :
-            print("Gain Parameter Error")
+            self.logger.console("Gain Parameter Error")
 
     def Get_IntegralTime(self):
         control = self.Read_Byte(CONTROL_REGISTER)
@@ -154,7 +157,7 @@ class TSL2591:
             self.Write_Byte(CONTROL_REGISTER, control)
             self.IntegralTime = val
         else:
-            print("Integral Time Parameter Error")
+            self.logger.console("Integral Time Parameter Error")
 
     def Read_CHAN0(self):
         return self.Read_Word(CHAN0_LOW)
@@ -199,9 +202,9 @@ class TSL2591:
         for i in range(0, self.IntegralTime+2):
             time.sleep(0.1)
         if(GPIO.input(self.gpio_pin) == GPIO.HIGH):
-            print ('INT 0')
+            self.logger.console ('INT 0')
         else:
-            print ('INT 1')
+            self.logger.console ('INT 1')
         channel_0 = self.Read_CHAN0()
         channel_1 = self.Read_CHAN1()
         self.Disable()
@@ -265,13 +268,13 @@ class TSL2591:
         
     def TSL2591_SET_LuxInterrupt(self, SET_LOW, SET_HIGH):
         atime  = 100 * self.IntegralTime + 100
-        again = 1.0;
+        again = 1.0
         if(self.Gain == MEDIUM_AGAIN):
-            again = 25.0;
+            again = 25.0
         elif(self.Gain == HIGH_AGAIN):
             again = 428.0
         elif(self.Gain == MAX_AGAIN):
-            again = 9876.0;
+            again = 9876.0
         Cpl = (atime * again) / LUX_DF
         channel_1 = self.Read_CHAN1()
         
@@ -304,7 +307,6 @@ class CQRobotLightSensor:
         pass
 
     def initialize(self):
-
         pass
 
     def read_lux(self):
@@ -331,11 +333,10 @@ class CQRobotLightSensor:
             return False
 
         try:
-            reading = self.read_value()
+            reading = self.read_value()            
         except:
-            e = sys.exc_info()[0]
-            print(f"Failed to read Light. Error Details >> {e}")
-            time.sleep(5)
+            ex = traceback.format_exc()
+            self.logger.error(f"Failed to read Light. Error Details >> {ex}")
             return False
         finally:
             if reading > -1:

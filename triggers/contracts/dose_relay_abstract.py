@@ -20,6 +20,12 @@ class DoseRelayAbstract(ABC):
     # Throw exception until calibration have taken place
     # During eligibility schedule check that dose_should_finish_by is not < now else switch relay off
 
+    def __init__(self, name, is_enabled, max_prime_time):
+        self.name = name
+        self.is_enabled = is_enabled
+        self._maximum_prime_time = max_prime_time
+        self._switch_relay_off()
+
     async def _dose(self, duration_in_seconds):     
         self._is_dosing = True   
         self._switch_relay_on()        
@@ -30,17 +36,9 @@ class DoseRelayAbstract(ABC):
     def _switch_relay_on(self):
         self._current_on_state = True
         GPIO.output(self.relay_pin_pos, GPIO.LOW if self.is_low_volt_relay else GPIO.HIGH) # ON
-        pass
     
     def _switch_relay_off(self): 
         GPIO.output(self.relay_pin_pos, GPIO.HIGH if self.is_low_volt_relay else GPIO.LOW) # OFF
-        pass
-
-    def __init__(self, name, is_enabled, max_prime_time):
-        self.name = name
-        self.is_enabled = is_enabled
-        self._maximum_prime_time = max_prime_time
-        self._switch_relay_off()
 
     def check_if_switched_on(self): 
         gpio_status = GPIO.input(self.relay_pin_pos)
@@ -79,7 +77,6 @@ class DoseRelayAbstract(ABC):
             # b. Request dosage instructions (return dose_duration_in_seconds and sleep time)
             # c. Dose
             # d. Sleep
-        pass
 
     async def dose(self, duration_in_seconds):
         await self.prime_tube_with_fluid()

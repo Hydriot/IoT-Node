@@ -1,12 +1,12 @@
 import os
 import configparser
-import platform
 
 class AppConfig(object):
     _configfile_name = "config.ini"
 
     # sections
     environment_section = "environment"
+    logging_section = "log"
     integration_api_section = "integration_api"
     sensors_section = "sensors"    
     available_sensors = "enabled_sensors"
@@ -22,11 +22,13 @@ class AppConfig(object):
             config = configparser.ConfigParser()
 
             config.add_section(self.environment_section)
-            config.set(self.environment_section, "os", platform.system())
-            config.set(self.environment_section, "enable_sim", "true")
-            config.set(self.environment_section, "save_to_file", "false")
+            config.set(self.environment_section, "enable_sim", "false")
             config.set(self.environment_section, "safe_shutdown_threshold", "11")
             config.set(self.environment_section, "name", "Hydriot IoT Device")
+
+            config.add_section(self.logging_section)
+            config.set(self.logging_section, "enable_file_logging", "true")
+            config.set(self.logging_section, "file_path", "output.log")
 
             config.add_section(self.available_sensors)
             config.set(self.available_sensors, "water_level_enabled", "false")
@@ -62,20 +64,20 @@ class AppConfig(object):
         ## TODO: Update the config
         pass
 
-    def get_os(self):       
-        return self.get_key_value(self.environment_section, "os")
-
     def get_enable_sim(self):
         return self.get_key_value(self.environment_section, "enable_sim") == "true"
-
-    def get_save_to_file(self):
-        return self.get_key_value(self.environment_section, "save_to_file") == "true"
 
     def get_safe_shutdown_threshold(self):
         return float(self.get_key_value(self.environment_section, "safe_shutdown_threshold"))
 
     def get_name(self):
         return self.get_key_value(self.environment_section, "name")
+
+    def get_log_to_file(self):
+        return self.get_key_value(self.logging_section, "enable_file_logging") == 'true'
+
+    def get_log_file_path(self):
+        return self.get_key_value(self.logging_section, "file_path")
 
     def get_integration_device_id(self):
         return self.get_key_value(self.integration_api_section, "device_id")

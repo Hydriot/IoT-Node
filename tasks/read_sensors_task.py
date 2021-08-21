@@ -1,6 +1,7 @@
 import asyncio
 import RPi.GPIO as GPIO
 import time
+import traceback
 
 from tasks.contracts.base_task import BaseTask
 from settings.app_config import AppConfig
@@ -11,12 +12,14 @@ from common.task_manager import TaskManager
 from hydriot import Hydriot, TriggerType
 from common.sensor_summary import SensorSummary
 from PyQt5.QtCore import pyqtSignal
+from utilities.logger import Logger
 
 class ReadSensorsTask(BaseTask):
     integration_adapter = None
     hydriot = None
     task_manager = None
-    progress = pyqtSignal(SensorSummary)    
+    progress = pyqtSignal(SensorSummary)   
+    logger = Logger()
 
     def cleanup(self):
         self.tds_sensor.stop_schedule()
@@ -28,7 +31,6 @@ class ReadSensorsTask(BaseTask):
             GPIO.cleanup()
 
         self.integration_adapter.cleanup()
-
         time.sleep(5) 
 
     async def run_container(self):
@@ -94,19 +96,19 @@ class ReadSensorsTask(BaseTask):
 
         await self.run_container()
     
-    def run_custom(self):
-        print(f"starting sensors reading")
+    def run_custom(self):        
+        self.logger.info("Starting sensors reading")
 
         self.hydriot = Hydriot()
         loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop) 
+        asyncio.set_event_loop(loop)      
 
-        try:            
-            loop.run_until_complete(self.run_all())
-        
+        try:
+            loop.run_until_complete(self.run_all())    
+
         except KeyboardInterrupt:
-            print (f'stopped')
-        
-        ## self.cleanup()
+            self.logger.info(f'Stopping sensor readings')
+
         self.finished.emit()
+
 

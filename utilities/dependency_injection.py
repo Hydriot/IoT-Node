@@ -23,6 +23,3 @@ class Container(containers.DeclarativeContainer):
     nutrient_relay_factory = providers.Factory(NutrientDispenserRelayStub) if simulate else providers.Factory(NutrientDispenserRelay)
     water_pump_relay_factory = providers.Factory(WaterPumpRelayStub) if simulate else providers.Factory(WaterPumpRelay)
     ph_down_relay_factory = providers.Factory(PhDownRelayStub) if simulate else providers.Factory(PhDownRelay)
-
-    pass
-

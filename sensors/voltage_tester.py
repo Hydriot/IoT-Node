@@ -1,12 +1,12 @@
 import os
 import time
-import platform
 
 from utilities.maths import Math
 from sensors.contracts.sensor_base import SensorBase
 from drivers.rasbee_voltage_tester import RasbeeVoltageTesterDriver
 from settings.app_config import AppConfig
 from common.sensor import SensorType
+from utilities.logger import Logger
 
 class VoltageTesterStub(SensorBase):
     config = AppConfig()
@@ -27,17 +27,6 @@ class VoltageTester(SensorBase):
     driver = None
     config = AppConfig()
 
-    def clear_console(self):
-        platform_name = platform.system()
-
-        if platform_name == 'Windows':
-            os.system('cls')
-        elif platform_name == 'Linux':
-            os.system('clear')
-        else:
-            print('Unknown Operating System')
-        pass
-
     def __init__(self):        
         enabled = self.config.is_voltage_tester_enabled()
         self.driver = RasbeeVoltageTesterDriver()
@@ -56,7 +45,7 @@ class VoltageTester(SensorBase):
         if average_value > 2 and average_value < safe_shutdown_threshold:            
 
             for count in range(delay_in_seconds, 0, -1):
-                self.clear_console()
+                Logger.clear_console()
                 print(f"WARNING! Dangerously low voltage detected, shutting down the system in [{count}] seconds.")
                 time.sleep(1)
 

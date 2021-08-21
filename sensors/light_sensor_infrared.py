@@ -1,11 +1,11 @@
-import sys
-import time
+import traceback
 
 from utilities.maths import Math
 from sensors.contracts.sensor_base import SensorBase
 from drivers.cqrobot_light_sensor import CQRobotLightSensor
 from settings.app_config import AppConfig
 from common.sensor import SensorType
+from utilities.logger import Logger
 
 class LightSensorInfraredStub(SensorBase):
     def __init__(self):
@@ -22,8 +22,10 @@ class LightSensorInfraredStub(SensorBase):
 
 class LightSensorInfrared(SensorBase):
     driver = None
+    logger = None
 
     def __init__(self):
+        self.logger = Logger()
         enabled = AppConfig().is_light_enabled_sensor()
         self.driver = CQRobotLightSensor()
         SensorBase.__init__(self, self.driver, SensorType.LightFrequency, "Light Sensor", 2, enabled, True)
@@ -35,11 +37,10 @@ class LightSensorInfrared(SensorBase):
 
         try:
             value = self.driver.read_infrared()
-
             return value
+
         except:
-            e = sys.exc_info()[0]            
+            ex = traceback.format_exc()           
             self.sensor_summary.set_last_read_error()
-            print(f"Failed to read [{self.sensor_summary.name}]. Error Details >> {e}")
-            time.sleep(5)      
+            self.logger.error(f"Failed to read [{self.sensor_summary.name}]. Error Details >> {ex}")  
             return None

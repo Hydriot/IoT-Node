@@ -18,14 +18,14 @@ class TriggerConfig(object):
             config = configparser.ConfigParser()
 
             config.add_section(self.nutrient_section)
-            config.set(self.nutrient_section, "max_prime_time_seconds", "5")
+            config.set(self.nutrient_section, "max_prime_time_seconds", "3")
             config.set(self.nutrient_section, "tds_per_20_seconds", "8")
-            config.set(self.nutrient_section, "dose_time_seconds", "15")
+            config.set(self.nutrient_section, "dose_time_seconds", "10")
 
             config.add_section(self.ph_down_section)
-            config.set(self.ph_down_section, "max_prime_time_seconds", "5")
+            config.set(self.ph_down_section, "max_prime_time_seconds", "3")
             config.set(self.ph_down_section, "ph_per_20_seconds", "1")
-            config.set(self.ph_down_section, "dose_time_seconds", "15")
+            config.set(self.ph_down_section, "dose_time_seconds", "5")
            
             config.write(cfgfile)
             cfgfile.close()
