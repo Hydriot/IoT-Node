@@ -80,31 +80,25 @@ class HydriotAdapter():
         return response.json()
 
 
-    def update_sensor_data(self, device_id, device_name, device_description, sensors = []):
+    def update_sensor_data(self, device_id, sensors = []):
 
         converted_list = []
         for sensor in sensors:
             converted_list.append({
-                "name": sensor.name,
+                "value": sensor.value,                
                 "type": sensor.type,
-                "value": sensor.value,
+                "readTime": None if sensor.readTime is None else sensor.readTime.isoformat(),                
+                "name": sensor.name,
+                "reference": None,
                 "isAvailble": sensor.isAvailble,
                 "isHealthy": sensor.isHealthy,
                 "groupName": "Default",
-                "settings" : None,
-                "readTime": None if sensor.readTime is None else sensor.readTime.isoformat()  
+                "settings" : None                 
             })
-
-        payload = {
-            "deviceId": device_id,
-            "name": device_name,
-            "description": device_description,
-            "sensors": converted_list
-        }  
         
         try:
             url = f"{self.base_url}/api/Device/UpdateSensorData/{device_id}"
-            response = requests.request("PUT", url, data=json.dumps(payload), headers=self.headers)
+            response = requests.request("PUT", url, data=json.dumps(converted_list), headers=self.headers)
 
             if response.status_code != 200:
                 raise LookupError(f'Failed to complete the request. Error Code [{response.status_code}]')

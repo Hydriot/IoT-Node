@@ -51,7 +51,7 @@ class IntegrationAdapter(object):
                         if converted_sensor is not None:
                             sensor_list.append(converted_sensor)
 
-                    self.adapter.update_sensor_data(self._device_id, 'Test Device', 'Seed example device', sensor_list)
+                    self.adapter.update_sensor_data(self._device_id, sensor_list)
 
                     self.previous_integration_success = True
                     self.last_integration_update = datetime.now()                
