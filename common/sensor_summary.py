@@ -78,7 +78,7 @@ class SensorSummary():
         self.upper_threshold = upper_threshold
 
     def update_value(self, new_value):
-        time_now = datetime.now()
+        time_now = datetime.utcnow()
         self.last_updated_increment = -1
 
         if self.last_execution is not None:
@@ -106,7 +106,7 @@ class SensorSummary():
         if has_reading or has_multiple_errors:
             return False
 
-        time_passed = (datetime.now() - self.last_execution).total_seconds()
+        time_passed = (datetime.utcnow() - self.last_execution).total_seconds()
         not_updated_in_time = time_passed > (self._frequency_in_seconds * 3)
 
         if (not_updated_in_time):

@@ -12,7 +12,7 @@ class ConsoleManager(object):
         self.logger = Logger()     
 
     def get_sensor_summary(self, sensor_summary):
-        age_in_seconds = None if sensor_summary.last_execution is None else round((datetime.now() - sensor_summary.last_execution).total_seconds(), 0)
+        age_in_seconds = None if sensor_summary.last_execution is None else round((datetime.utcnow() - sensor_summary.last_execution).total_seconds(), 0)
         latest_value = None if sensor_summary.latest_value is None else sensor_summary.latest_value
         default_display = "n/a"
 
