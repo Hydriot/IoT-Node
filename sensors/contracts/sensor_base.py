@@ -29,39 +29,39 @@ class SensorBase(SchedulingAbstract):
         return raw_value
 
     async def read_average(self, count, delay_in_milliseconds):
-        total = 0        
+        try:
+            total = 0        
 
-        for i in range(count):
-            value = self.read_raw()
-            total += value
-            if delay_in_milliseconds > 0:
-                await asyncio.sleep(delay_in_milliseconds/1000)          
+            for i in range(count):
+                value = self.read_raw()
+                total += value
+                if delay_in_milliseconds > 0:
+                    await asyncio.sleep(delay_in_milliseconds/1000)          
 
-        average = total / count
-        converted = self.convert_raw(average)
-        self.sensor_summary.update_value(converted)
-       
-        return converted
+            average = total / count
+            converted = self.convert_raw(average)
+            self.sensor_summary.update_value(converted)
+            return converted
+        
+        except:
+            ex = traceback.format_exc()
+            self.sensor_summary.set_last_read_error()
+            self.logger.error(f"Failed to read [{self.sensor_summary.name}]. Error Details >> {ex}")
+            return None
 
     ## Override if needed
     def post_read_action(self):
         pass
 
     def read_value(self):
-        value = self.read_raw()
-        converted = self.convert_raw(value)
-        self.sensor_summary.update_value(converted)
-        self.post_read_action()     
-
-        return converted
-
-    def read_raw(self):
-        if self.driver is None:
-            raise NotImplementedError
 
         try:
-            value = self.driver.read_value()
-            return value
+            value = self.read_raw()
+            converted = self.convert_raw(value)
+            self.sensor_summary.update_value(converted)
+            self.post_read_action()  
+
+            return converted
 
         except:
             ex = traceback.format_exc()
@@ -69,12 +69,26 @@ class SensorBase(SchedulingAbstract):
             self.logger.error(f"Failed to read [{self.sensor_summary.name}]. Error Details >> {ex}")
             return None
 
-    def is_available(self):
+    def read_raw(self):
         if self.driver is None:
             raise NotImplementedError
-        
+
+        return self.driver.read_value()
+
+    def is_available(self):
         try:
-            return self.driver.is_available()
+            if self.driver is None:
+                return False
+
+            ## Check if there is a driver is available implimentation
+            driver_self_check = self.driver.is_available()
+            if driver_self_check is not None:
+                return driver_self_check
+            
+            ## Fallback, check that we can read the raw value without an error
+            self.read_raw()
+
+            return True
 
         except:
             ex = traceback.format_exc()          

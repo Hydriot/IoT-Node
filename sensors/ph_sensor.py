@@ -28,7 +28,7 @@ class PhSensor(SensorBase):
     def __init__(self):
         enabled = AppConfig().is_ph_enabled_sensor()
         self.driver = GaohouPhSensorDriver()
-        SensorBase.__init__(self, self.driver, SensorType.pH, "pH Sensor", 2, enabled, True)
+        SensorBase.__init__(self, self.driver, SensorType.pH, "pH Sensor", 5, enabled, True)
         self.offset = AppConfig().get_ph_offset()
         self.sensor_summary.define_health_parameters(True, 0, 14)
 

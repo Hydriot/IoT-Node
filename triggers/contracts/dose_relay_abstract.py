@@ -54,9 +54,9 @@ class DoseRelayAbstract(ABC):
             start_measurement = self._counter_sensor.latest_value
 
         self._switch_relay_on()
-        prime_time_end = datetime.utcnow() + timedelta(seconds=self._maximum_prime_time)
+        prime_time_end = datetime.now() + timedelta(seconds=self._maximum_prime_time)
 
-        while (datetime.utcnow() <= prime_time_end):
+        while (datetime.now() <= prime_time_end):
             await asyncio.sleep(1)
             
             if self._counter_sensor is not None:

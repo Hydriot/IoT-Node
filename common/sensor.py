@@ -38,7 +38,7 @@ class Sensor():
     groupName = None
     settings = None
 
-    def __init__(self, type, value, read_time = datetime.utcnow(), name = None, group_name = 'default', settings = None):
+    def __init__(self, type, value, read_time = datetime.now(), name = None, group_name = 'default', settings = None):
         self.name = str(type) if name is None else name
         self.value = value
         self.type = type

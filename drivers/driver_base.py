@@ -14,6 +14,6 @@ class DriverBase(ABC):
     def read_value(self): raise NotImplementedError
 
     @abstractmethod
-    def is_available(self): raise NotImplementedError
+    def is_available(self): return None
 
 

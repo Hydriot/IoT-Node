@@ -54,7 +54,7 @@ class IntegrationAdapter(object):
                     self.adapter.update_sensor_data(self._device_id, sensor_list)
 
                     self.previous_integration_success = True
-                    self.last_integration_update = datetime.utcnow()                
+                    self.last_integration_update = datetime.now()                
 
                 except:
                     ex = traceback.format_exc()

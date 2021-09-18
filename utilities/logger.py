@@ -37,21 +37,21 @@ class Logger():
             pass
 
         file = open(self._file_path,"a", encoding="utf-8")
-        file.write(f"Timestamp [{datetime.utcnow()}] Level [{level}] >> {msg}\n")
+        file.write(f"Timestamp [{datetime.now()}] Level [{level}] >> {msg}\n")
         file.close()
     
     def info(self, msg):
-        print(f"Timestamp [{datetime.utcnow()}] Level [Info] >> {msg}")
+        print(f"Timestamp [{datetime.now()}] Level [Info] >> {msg}")
         self.write_to_file("Info", msg)
 
     def warn(self, msg, delay = 0):
         self.write_to_file("Warning", msg)
-        print(f"Timestamp [{datetime.utcnow()}] Level [Warn] >> {msg}")
+        print(f"Timestamp [{datetime.now()}] Level [Warn] >> {msg}")
         if delay > 0:
             time.sleep(delay)
           
     def error(self, msg):
         self.write_to_file("Error", msg)
-        print(f"Timestamp [{datetime.utcnow()}] Level [Error] >> {msg}")
+        print(f"Timestamp [{datetime.now()}] Level [Error] >> {msg}")
         time.sleep(5)
         

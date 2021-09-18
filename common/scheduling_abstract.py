@@ -30,7 +30,7 @@ class SchedulingAbstract(ABC):
 
         while self.is_monitoring():
             if self._use_average is True:
-                await self.read_average(20, 10)
+                await self.read_average(15, 10)
             elif self._use_average is False:
                 self.read_value()            
             await asyncio.sleep(self.frequency_in_seconds)            
