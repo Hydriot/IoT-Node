@@ -36,7 +36,7 @@ After doing the hardware and software setup you can either run hydriot node from
 * Run main.py
 
 ### Run Remotely
-Ensure you have done the (remote configuration in the Wiki page)[https://github.com/Hydriot/IoT-Node/wiki/Remote-SSH-Development-Setup]. You are redirecting the display app so neeed to host a xserver locally.
+Ensure you have done the [remote configuration in the Wiki page](https://github.com/Hydriot/IoT-Node/wiki/Remote-SSH-Development-Setup). You are redirecting the display app so neeed to host a xserver locally.
 * Open the remote location Pi > "/home/pi/hydriot/IoT-Node"
 * Press Cntr+D (Special run configuration that points to loal pc as destination display)
 * Run from debug
