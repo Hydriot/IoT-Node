@@ -6,6 +6,7 @@ from sensors.water_level_sensor import WaterLevelSensorStub, WaterLevelSensor
 from sensors.ph_sensor import PhSensorStub, PhSensor
 from sensors.light_sensor_infrared import LightSensorInfraredStub, LightSensorInfrared
 from sensors.voltage_tester import VoltageTesterStub, VoltageTester
+from sensors.temperature_sensor import TemperatureSensorStub, TemperatureSensor
 
 from triggers.nutrient_dispenser_trigger import NutrientDispenserRelayStub, NutrientDispenserRelay
 from triggers.ph_down_trigger import PhDownRelayStub, PhDownRelay
@@ -19,7 +20,8 @@ class Container(containers.DeclarativeContainer):
     ph_sensor_factory = providers.Factory(PhSensorStub) if simulate else providers.Factory(PhSensor)
     voltage_tester_factory = providers.Factory(VoltageTesterStub) if simulate else providers.Factory(VoltageTester)
     light_sensor_infrared_factory = providers.Factory(LightSensorInfraredStub) if simulate else providers.Factory(LightSensorInfrared)
-    
+    temperature_sensor_factory = providers.Factory(TemperatureSensorStub) if simulate else providers.Factory(TemperatureSensor)
+
     nutrient_relay_factory = providers.Factory(NutrientDispenserRelayStub) if simulate else providers.Factory(NutrientDispenserRelay)
     water_pump_relay_factory = providers.Factory(WaterPumpRelayStub) if simulate else providers.Factory(WaterPumpRelay)
     ph_down_relay_factory = providers.Factory(PhDownRelayStub) if simulate else providers.Factory(PhDownRelay)

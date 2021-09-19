@@ -85,6 +85,9 @@ class ReadSensorsTask(BaseTask):
         voltage_sensor = container.voltage_tester_factory()
         self.register_sensor(voltage_sensor)
 
+        temperature_sensor = container.temperature_sensor_factory()
+        self.register_sensor(temperature_sensor)
+
         ## self.register_sensor(container.light_sensor_infrared_factory())
 
         self.register_trigger(TriggerType.NutrientDose, container.nutrient_relay_factory(), tds_sensor)

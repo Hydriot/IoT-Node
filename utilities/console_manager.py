@@ -52,6 +52,8 @@ class ConsoleManager(object):
                 self.logger.console(self.get_sensor_summary(hydriot.ph_sensor))
             if hydriot.voltage_sensor is not None:
                 self.logger.console(self.get_sensor_summary(hydriot.voltage_sensor))
+            if hydriot.temperature_sensor is not None:
+                self.logger.console(self.get_sensor_summary(hydriot.temperature_sensor))                
 
             self.logger.console("")
             self.logger.console(">>> Registered Triggers <<<")

@@ -21,14 +21,7 @@ class CQRobotContactLiquidLevelSensorDriver(DriverBase):
     def initialize(self):
         GPIO.wiringPiSetup()
 
-    
-    
-
-
     def read_value(self):
-        
-        
-
         reading = GPIO.digitalRead(self.wiringpi_pin)
         return reading
 

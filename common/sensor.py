@@ -14,7 +14,8 @@ class SensorType(IntEnum):
     pH = 3
     LightFrequency = 4
     LightIntensity = 5
-    Voltage = 6
+    Voltage = 6,
+    Temperature = 7,
     Custom = 99
 
 class Settings():

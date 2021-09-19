@@ -56,6 +56,10 @@ class Hydriot():
         return self.get_sensor(SensorType.Voltage)
 
     @property
+    def temperature_sensor(self):
+        return self.get_sensor(SensorType.Temperature)
+
+    @property
     def nutrient_trigger(self):
         return None if TriggerType.NutrientDose not in self.triggers else self.triggers[TriggerType.NutrientDose]
     

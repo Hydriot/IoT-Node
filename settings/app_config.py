@@ -38,6 +38,7 @@ class AppConfig(object):
             config.set(self.available_sensors, "tds_enabled", "false")
             config.set(self.available_sensors, "light_enabled", "false")
             config.set(self.available_sensors, "voltage_enabled", "false")
+            config.set(self.available_sensors, "temperature_enabled", "false")
 
             config.add_section(self.available_triggers)
             config.set(self.available_triggers, "ph_down_enabled", "false")
@@ -125,6 +126,9 @@ class AppConfig(object):
     def is_voltage_tester_enabled(self):
         return self.get_key_value(self.available_sensors, "voltage_enabled") == "true"
 
+    def is_temperature_sensor_enabled(self):
+        return self.get_key_value(self.available_sensors, "temperature_enabled") == "true"
+
     def is_ph_down_enabled(self):
         return self.get_key_value(self.available_triggers, "ph_down_enabled") == "true"
 
@@ -133,3 +137,4 @@ class AppConfig(object):
 
     def is_water_pump_enabled(self):
         return self.get_key_value(self.available_triggers, "water_pump_enabled") == "true"
+
