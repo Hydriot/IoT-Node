@@ -6,6 +6,7 @@ import traceback
 
 from triggers.contracts.dose_relay_abstract import DoseRelayAbstract
 from triggers.contracts.on_off_relay_abstract import OnOffRelayAbstract
+from common.trigger import TriggerType
 from utilities.logger import Logger
 
 class HydriotAdapter():
@@ -82,7 +83,7 @@ class HydriotAdapter():
         return response.json()
 
     
-    def convert_trigger(self, trigger):
+    def convert_trigger(self, trigger, trigger_type):
         default_on_state = None
         is_currently_on = trigger.check_if_switched_on()
 
@@ -94,15 +95,39 @@ class HydriotAdapter():
 
         code = f"{trigger.name[0:3]}01"
         trigger_type = "RelayDefaultOn" if default_on_state else "RelayDefaultOff"
-        currently_on = "On" if is_currently_on else "Off"   
+        currently_on = "On" if is_currently_on else "Off"
+
+        settings = None
+
+        if trigger_type == TriggerType.WaterPumpCutout:
+            settings = {
+                "durationConfigurable": False
+            }
+        elif trigger_type == TriggerType.NutrientDose:
+            settings = {
+                "durationConfigurable": True,
+                "MaxDuration": {
+                    "value": 20,
+                    "type": "Minutes"
+                }
+            }
+        elif trigger_type == TriggerType.PhDose:
+            settings = {
+                "durationConfigurable": True,
+                "MaxDuration": {
+                    "value": 5,
+                    "type": "Minutes"
+                }
+            }
 
         converted_trigger = {
             "name": trigger.name,                
             "code": code,
             "type": trigger_type,
-            "status": currently_on                        
-        }        
-
+            "status": currently_on,
+            "settings": settings                        
+        }
+        
         return converted_trigger
 
     def syncronize_triggers(self, device_id, triggers = dict()):
@@ -111,7 +136,7 @@ class HydriotAdapter():
         self.logger.info(f"Trigger Payload count [{len(triggers)}]")
         for key in triggers:
             trigger = triggers[key]
-            converted = self.convert_trigger(trigger)
+            converted = self.convert_trigger(trigger, key)
             converted_list.append(converted)        
 
         try:

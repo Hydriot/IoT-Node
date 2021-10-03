@@ -10,7 +10,8 @@ from utilities.dependency_injection import Container
 from utilities.console_manager import ConsoleManager
 from utilities.integration_adapter import IntegrationAdapter
 from common.task_manager import TaskManager
-from hydriot import Hydriot, TriggerType
+from hydriot import Hydriot
+from common.trigger import TriggerType
 from common.sensor_summary import SensorSummary
 from PyQt5.QtCore import pyqtSignal
 from utilities.logger import Logger

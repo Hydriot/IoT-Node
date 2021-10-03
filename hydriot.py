@@ -1,12 +1,6 @@
-
 from enum import Enum
 from common.sensor import SensorType
-
-class TriggerType(Enum):
-    Undefined = 0,
-    NutrientDose = 1,
-    PhDose = 2,
-    WaterPumpCutout = 3
+from common.trigger import TriggerType
 
 class Hydriot():
     sensors = []
