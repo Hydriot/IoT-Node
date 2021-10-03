@@ -13,7 +13,6 @@ class Hydriot():
     triggers = dict()
 
     def set_sensor(self, sensor):
-
         found = False
         for index in range(len(self.sensors)):
             if (self.sensors[index].sensor_type == sensor.sensor_type):

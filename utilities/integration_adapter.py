@@ -10,6 +10,7 @@ class IntegrationAdapter(object):
     _frequency_in_seconds = 1    
     _is_monitoring = False
     _sensors = None
+    _triggers = None
     _device_id = "n/a"
     _name = None
     last_integration_update = None
@@ -51,7 +52,11 @@ class IntegrationAdapter(object):
                         if converted_sensor is not None:
                             sensor_list.append(converted_sensor)
 
-                    self.adapter.update_sensor_data(self._device_id, sensor_list)
+                    if (sensor_list is not None and len(sensor_list) > 0):
+                        self.adapter.update_sensor_data(self._device_id, sensor_list)
+
+                    if (self._triggers is not None and len(self._triggers) > 0):
+                        self.adapter.syncronize_triggers(self._device_id, self._triggers)
 
                     self.previous_integration_success = True
                     self.last_integration_update = datetime.now()                
@@ -68,8 +73,10 @@ class IntegrationAdapter(object):
     def stop_monitoring(self):
         self._is_monitoring = False
 
-    def start_monitoring(self, sensors):
+    def start_monitoring(self, sensors, triggers):
         self._sensors = sensors
+        self._triggers = triggers
+
         asyncio.ensure_future(self.register_integration())  
     
     def cleanup(self):

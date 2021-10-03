@@ -5,6 +5,7 @@ import traceback
 
 from tasks.contracts.base_task import BaseTask
 from settings.app_config import AppConfig
+from utilities import logger
 from utilities.dependency_injection import Container
 from utilities.console_manager import ConsoleManager
 from utilities.integration_adapter import IntegrationAdapter
@@ -95,7 +96,7 @@ class ReadSensorsTask(BaseTask):
         self.register_trigger(TriggerType.WaterPumpCutout,container.water_pump_relay_factory(), water_level_sensor)
 
         self.integration_adapter = IntegrationAdapter(30)
-        self.integration_adapter.start_monitoring(self.hydriot.sensors)
+        self.integration_adapter.start_monitoring(self.hydriot.sensors, self.hydriot.triggers)
 
         await self.run_container()
     
